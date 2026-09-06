@@ -11,7 +11,7 @@
  *
  */
 
-package edu.vinu.domain.course.repository.SimpleCourseProjection;
+package edu.vinu.domain.course.repository.projections;
 
 import java.math.BigDecimal;
 
