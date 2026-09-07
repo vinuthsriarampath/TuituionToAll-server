@@ -13,6 +13,7 @@
 
 package edu.vinu.domain.student_batch_enrollment.repository;
 
+import edu.vinu.domain.course.repository.projections.StudentCourseProjection;
 import edu.vinu.domain.reporting.projection.TrendPointProjection;
 import edu.vinu.domain.student.repository.projection.StudentLearningProjection;
 import edu.vinu.domain.student.repository.projection.StudentUserProjection;
@@ -30,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface StudentBatchEnrollmentRepository extends JpaRepository<StudentBatchEnrollment,Long> {
@@ -273,4 +275,36 @@ public interface StudentBatchEnrollmentRepository extends JpaRepository<StudentB
     ORDER BY sbe.created_date DESC
     """, nativeQuery = true)
     List<EnrollmentHistoryProjection> findEnrollmentHistory(Long studentId, Long courseId);
+
+    @Query(value = """
+    SELECT
+        c.id AS courseId,
+        c.title AS courseTitle,
+        c.description AS courseDescription,
+        c.duration_in_hours AS durationInHours,
+        c.level AS courseLevel,
+        c.category AS courseCategory,
+        c.status AS courseStatus,
+        c.language AS courseLanguage,
+        c.mode AS courseMode,
+        c.thumbnail AS thumbnail,
+        c.avg_rating AS avgRating,
+        c.total_no_ratings AS totalRatings,
+
+        b.id AS batchId,
+        b.course_id AS batchCourseId,
+        b.name AS batchName,
+        b.start_date AS startDate,
+        b.start_time AS startTime,
+        b.batch_status AS batchStatus
+
+    FROM student_batch_enrollment sbe
+
+    INNER JOIN batch b ON b.id = sbe.batch_id
+    INNER JOIN courses c ON c.id = b.course_id
+    WHERE sbe.student_id = :studentId
+        AND b.id = :batchId
+        AND c.id = :courseId
+    """, nativeQuery = true)
+    Optional<StudentCourseProjection> findStudentCourse(Long courseId, Long batchId, Long studentId);
 }
