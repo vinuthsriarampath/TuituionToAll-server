@@ -48,7 +48,7 @@ public class StudentCourseServiceImpl implements StudentCourseService {
                 () -> new NotFoundException("Student is not enrolled in the specified course and batch.")
         );
 
-        List<StudentModuleResponse> modules = moduleService.getStudentModulesByBatch(batchId, List.of(ModuleStatus.PUBLISHED, ModuleStatus.PUBLISHED));
+        List<StudentModuleResponse> modules = moduleService.getStudentModulesByBatch(batchId, List.of(ModuleStatus.PUBLISHED, ModuleStatus.LOCKED));
 
         return ApiResponse.builder()
                 .message("Student Course Details retrieved successfully!")
